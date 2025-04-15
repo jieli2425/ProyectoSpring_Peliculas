@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Peliculas</title>
+</head>
+<body>
+<h1>Peliculas disponibles</h1>
+<div>
+  <ul>
+    <li th:each="peli : ${peliculas}">
+      <span th:text="${peli.titol}"></span> -
+      <span th:text="${peli.director}"></span>
+      <form action="/pelicules/esborrar" method="post">
+        <input type="hidden" name="id" th:value="${peli.id}" />
+        <button type="submit">Esborrar</button>
+      </form>
+      <form action="/pelicules/editar" method="get">
+        <input type="hidden" name="id" th:value="${peli.id}" />
+        <button type="submit">Editar</button>
+      </form>
+    </li>
+  </ul>
+</div>
+<form action="/pelicules/afegir/" method="post">
+  <input type="text" name="titol" placeholder="Títol" required />
+  <input type="text" name="director" placeholder="Director" required />
+  <input type="number" name="any" placeholder="Any" required />
+  <input type="text" name="descripcio" placeholder="Descripció" required />
+  <button type="submit">Afegir Peli</button>
+</form>
+</body>
+</html>

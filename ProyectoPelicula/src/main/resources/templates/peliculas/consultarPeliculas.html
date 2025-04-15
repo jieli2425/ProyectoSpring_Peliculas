@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Llista de Pel·lícules</title>
+</head>
+<body>
+<h1>Llista de Pel·lícules</h1>
+
+<ul>
+    <li th:each="peli : ${llistaPeliculas}">
+        <span th:text="${peli.id}">ID</span> -
+        <span th:text="${peli.titol}">Títol</span> -
+        <span th:text="${peli.director}">Director</span> -
+        <span th:text="${peli.any}">Any</span>
+    </li>
+</ul>
+
+</body>
+</html>
