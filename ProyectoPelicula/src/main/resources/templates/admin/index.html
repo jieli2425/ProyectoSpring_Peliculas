@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestió de pel·lícules</title>
+</head>
+<body>
+<h1>Administració de pel·lícules</h1>
+
+
+<form method="post" action="/admin/afegir">
+    <input type="text" name="titol" placeholder="Títol" required>
+    <input type="text" name="director" placeholder="Director" required>
+    <input type="number" name="any" placeholder="Any" required>
+    <textarea name="descripcio" placeholder="Descripció" required></textarea>
+    <button type="submit">Afegir</button>
+</form>
+
+<h2>Llista de pel·lícules</h2>
+<table>
+    <tr>
+        <th>Títol</th><th>Director</th><th>Any</th><th>Descripció</th><th>Accions</th>
+    </tr>
+    <tr th:each="peli : ${pelis}">
+        <td th:text="${peli.titol}"></td>
+        <td th:text="${peli.director}"></td>
+        <td th:text="${peli.any}"></td>
+        <td th:text="${peli.descripcio}"></td>
+        <td>
+            <form th:action="@{/admin/eliminar}" method="post" style="display:inline">
+                <input type="hidden" name="id" th:value="${peli.id}" />
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
