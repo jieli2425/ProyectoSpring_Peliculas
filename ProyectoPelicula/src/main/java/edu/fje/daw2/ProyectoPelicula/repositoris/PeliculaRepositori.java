@@ -17,3 +17,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface PeliculaRepositori extends MongoRepository<Peli, String> {
     Peli findByTitol(String titol);
 }
+

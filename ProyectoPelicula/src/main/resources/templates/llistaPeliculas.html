@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Gestió de Pel·lícules</title>
+</head>
+<body>
+<h1>Gestió de Pel·lícules</h1>
+<a th:href="@{/admin/afegir}">Afegir nova pel·lícula</a>
+<table border="1">
+  <tr>
+    <th>Títol</th>
+    <th>Director</th>
+    <th>Any</th>
+    <th>Descripció</th>
+    <th>Accions</th>
+  </tr>
+  <tr th:each="peli : ${peliculas}">
+    <td th:text="${peli.titol}"></td>
+    <td th:text="${peli.director}"></td>
+    <td th:text="${peli.any}"></td>
+    <td th:text="${peli.descripcio}"></td>
+    <td>
+      <a th:href="@{|/admin/editar/${peli.id}|}">Editar</a> |
+      <a th:href="@{|/admin/eliminar/${peli.id}|}" onclick="return confirm('Estàs segur?')">Eliminar</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
