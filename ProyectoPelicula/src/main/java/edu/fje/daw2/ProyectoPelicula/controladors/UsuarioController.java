@@ -1,53 +1,86 @@
-//package edu.fje.daw2.ProyectoPelicula.controladors;
-//
-//import edu.fje.daw2.ProyectoPelicula.repositoris.PeliculaRepositori;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//
-//@Controller
-//public class PeliculasController {
-//
-//    @Autowired
-//    private PeliculaRepositori repositori;
-//
-//    @GetMapping("/peliculas")
-//    public String consultarPeliculas(Model model) {
-//        model.addAttribute("peliculas", repositori.findAll());
-//        return "usuari/consultarPeliculas";
-//    }
-//}
-
 package edu.fje.daw2.ProyectoPelicula.controladors;
 
-import edu.fje.daw2.ProyectoPelicula.model.Peli;
-import edu.fje.daw2.ProyectoPelicula.repositoris.PeliculaRepositori;
+import edu.fje.daw2.ProyectoPelicula.model.Usuario;
+import edu.fje.daw2.ProyectoPelicula.repositoris.UsuarioRepositori;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @Controller
 public class UsuarioController {
 
     @Autowired
-    private PeliculaRepositori repositori;
+    private UsuarioRepositori usuarioRepositori;
 
-    @GetMapping("/consultar")
-    public String indexUsuari(@RequestParam(required = false) String titol, Model model) {
-        List<Peli> pelis = new ArrayList<>();
+    @GetMapping("/")
+    public String mostrarLogin() {
+        return "login";
+    }
 
-        if (titol != null && !titol.isEmpty()) {
-            Peli peli = repositori.findByTitol(titol);
-            if (peli != null) pelis.add(peli);
+    @PostMapping("/login")
+    public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
+        Usuario usuario = usuarioRepositori.obtenerNombreUsuario(username);
+
+        if (usuario != null && usuario.getContrasena().equals(password)) {
+            session.setAttribute("usuario", usuario);
+            if (usuario.getRol().equals("admin")) {
+                return "redirect:/admin/crudAdmin";
+            } else {
+                return "redirect:/consultar";
+            }
         } else {
-            pelis = repositori.findAll();
+            model.addAttribute("error", "Usuario o contraseña incorrectos");
+            return "login";
         }
+    }
 
-        model.addAttribute("pelis", pelis);
-        return "index";
+    @GetMapping("/admin/usuarios")
+    public String listarUsuarios(Model model) {
+        List<Usuario> usuarios = usuarioRepositori.obtenerTodos();
+        model.addAttribute("usuarios", usuarios);
+        return "admin/usuarios";
+    }
+
+    @GetMapping("/admin/usuarios/nuevo")
+    public String mostrarFormularioNuevoUsuario() {
+        return "admin/crearUsuario";
+    }
+
+    @PostMapping("/admin/usuarios")
+    public String crearUsuario(@RequestParam String username, @RequestParam String password, @RequestParam String rol) {
+        Usuario nuevoUsuario = new Usuario(0, username, password, rol);
+        usuarioRepositori.agregarUsuario(nuevoUsuario);
+        return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/admin/usuarios/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable int id) {
+        usuarioRepositori.eliminarUsuario(id);
+        return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/admin/usuarios/editar/{id}")
+    public String mostrarFormularioEditarUsuario(@PathVariable int id, Model model) {
+        Usuario usuario = usuarioRepositori.obtenerPorId(id);
+        model.addAttribute("usuario", usuario);
+        return "admin/editarUsuario";
+    }
+
+    @PostMapping("/admin/usuarios/editar")
+    public String editarUsuario(@RequestParam int id, @RequestParam String username, @RequestParam String password, @RequestParam String rol) {
+        Usuario usuarioActualizado = new Usuario(id, username, password, rol);
+        usuarioRepositori.actualizarUsuario(usuarioActualizado);
+        return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }
+

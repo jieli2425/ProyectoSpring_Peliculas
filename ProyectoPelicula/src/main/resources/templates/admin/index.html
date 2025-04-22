@@ -5,7 +5,7 @@
     <title>Gestió de pel·lícules</title>
 </head>
 <body>
-<h1>Administració de pel·lícules</h1>
+<h1>Administracion de peliculas</h1>
 
 <form method="post" action="/admin/afegir">
     <input type="text" name="titol" placeholder="Títol" required>
@@ -15,7 +15,7 @@
     <button type="submit">Afegir</button>
 </form>
 
-<h2>Llista de pel·lícules</h2>
+<h2>Lista de peliculas</h2>
 <table>
     <tr>
         <th>Títol</th><th>Director</th><th>Any</th><th>Descripció</th><th>Accions</th>
@@ -26,9 +26,14 @@
         <td th:text="${peli.any}"></td>
         <td th:text="${peli.descripcio}"></td>
         <td>
+            <a th:href="@{/admin/modificar/{id}(id=${peli.id})}">
+                <button type="button">Editar</button>
+            </a>
+        </td>
+        <td>
             <form th:action="@{/admin/eliminar}" method="post" style="display:inline">
                 <input type="hidden" name="id" th:value="${peli.id}" />
-                <button type="submit">Eliminar</button>
+                <button type="submit" onclick="return confirm('Estàs segur?')">Eliminar</button>
             </form>
         </td>
     </tr>
