@@ -1,42 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
 <head>
     <meta charset="UTF-8">
-    <title>Gestió de pel·lícules</title>
+    <title>Gestion de pelicules</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Administracion de peliculas</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Gestion de Pelicules</h1>
+        <a href="/admin/usuarios" class="btn btn-secondary">Gestion Usuarios</a>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
 
-<form method="post" action="/admin/afegir">
-    <input type="text" name="titol" placeholder="Títol" required>
-    <input type="text" name="director" placeholder="Director" required>
-    <input type="number" name="any" placeholder="Any" required>
-    <textarea name="descripcio" placeholder="Descripció" required></textarea>
-    <button type="submit">Afegir</button>
-</form>
-
-<h2>Lista de peliculas</h2>
-<table>
-    <tr>
-        <th>Títol</th><th>Director</th><th>Any</th><th>Descripció</th><th>Accions</th>
-    </tr>
-    <tr th:each="peli : ${pelis}">
-        <td th:text="${peli.titol}"></td>
-        <td th:text="${peli.director}"></td>
-        <td th:text="${peli.any}"></td>
-        <td th:text="${peli.descripcio}"></td>
-        <td>
-            <a th:href="@{/admin/modificar/{id}(id=${peli.id})}">
-                <button type="button">Editar</button>
-            </a>
-        </td>
-        <td>
-            <form th:action="@{/admin/eliminar}" method="post" style="display:inline">
-                <input type="hidden" name="id" th:value="${peli.id}" />
-                <button type="submit" onclick="return confirm('Estàs segur?')">Eliminar</button>
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            Añadir nueva pelicula
+        </div>
+        <div class="card-body">
+            <form method="post" action="/admin/afegir">
+                <div class="mb-3">
+                    <label class="form-label">Titulo</label>
+                    <input type="text" name="titol" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Director</label>
+                    <input type="text" name="director" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Any</label>
+                    <input type="number" name="any" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripcion</label>
+                    <textarea name="descripcio" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Imagen URL</label>
+                    <input type="text" name="imagen" class="form-control" placeholder="URL de la imagen" required>
+                </div>
+                <button type="submit" class="btn btn-success">Afegir pelicula</button>
             </form>
-        </td>
-    </tr>
-</table>
+        </div>
+    </div>
+
+    <h2 class="mb-3">Lista de pelicules</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Titol</th>
+            <th>Director</th>
+            <th>Any</th>
+            <th>Descripció</th>
+            <th>Imagen</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="peli : ${pelis}">
+            <td th:text="${peli.titol}"></td>
+            <td th:text="${peli.director}"></td>
+            <td th:text="${peli.any}"></td>
+            <td th:text="${peli.descripcio}"></td>
+            <td>
+                <img th:src="${peli.imagen}" alt="Imatge de la pel·lícula" class="img-fluid" style="max-width: 100px;">
+            </td>
+            <td>
+                <a th:href="@{/admin/modificar/{id}(id=${peli.id})}" class="btn btn-warning btn-sm mb-1">Editar</a>
+                <form action="/admin/eliminar" method="post" style="display:inline">
+                    <input type="hidden" name="id" th:value="${peli.id}" />
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Estas seguro?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
