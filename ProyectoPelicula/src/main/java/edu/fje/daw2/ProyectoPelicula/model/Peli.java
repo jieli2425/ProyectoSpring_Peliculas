@@ -2,6 +2,8 @@ package edu.fje.daw2.ProyectoPelicula.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Clase que representa una película almacenada en la colección "pelicules" de MongoDB.
@@ -43,7 +45,15 @@ public class Peli {
     /**
      * Constructor vacío necesario para la deserialización de Spring Data.
      */
-    public Peli() {}
+//    private List<String> usuariosQueDieronLike; // Almacena IDs de usuarios
+//
+//    public Peli() {
+//        this.usuariosQueDieronLike = new ArrayList<>();
+//    }
+    private List<String> likes = new ArrayList<>();
+
+    public Peli() {
+    }
 
     /**
      * Constructor con todos los campos excepto el identificador.
@@ -54,12 +64,13 @@ public class Peli {
      * @param descripcio descripción de la película
      * @param imagen     URL de la imagen
      */
-    public Peli(String titol, String director, int any, String descripcio, String imagen) {
+    public Peli(String titol, String director, int any, String descripcio, String imagen, List<String> likes) {
         this.titol = titol;
         this.director = director;
         this.any = any;
         this.descripcio = descripcio;
         this.imagen = imagen;
+        this.likes = likes;
     }
 
     /**
@@ -124,4 +135,12 @@ public class Peli {
 
     public String getImagen() { return imagen; }
     public void setImagen(String imagen) { this.imagen = imagen; }
+
+    public List<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<String> likes) {
+        this.likes = likes;
+    }
 }

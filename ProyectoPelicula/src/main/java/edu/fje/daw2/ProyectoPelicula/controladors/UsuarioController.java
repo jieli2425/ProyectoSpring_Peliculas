@@ -1,7 +1,9 @@
 package edu.fje.daw2.ProyectoPelicula.controladors;
 
+import edu.fje.daw2.ProyectoPelicula.model.Peli;
 import edu.fje.daw2.ProyectoPelicula.model.Usuario;
 import edu.fje.daw2.ProyectoPelicula.repositoris.UsuarioRepositori;
+import edu.fje.daw2.ProyectoPelicula.repositoris.PeliculaRepositori;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,31 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
+    private PeliculaRepositori peliculaRepositori;
+    @Autowired
     private UsuarioRepositori usuarioRepositori;
+
+    @PostMapping("/like/{idPelicula}")
+    public String likePelicula(@PathVariable String idPelicula, HttpSession session, Model model) {
+        // Obtener el usuario actual de la sesión
+        Usuario usuario = (Usuario) session.getAttribute("usuario"); // Asumiendo que el usuario está en la sesión
+
+        if (usuario != null) {
+            Peli pelicula = peliculaRepositori.findById(idPelicula).orElse(null);
+
+            if (pelicula != null) {
+                if (pelicula.getLikes().contains(usuario.getNombreUsuario())) {
+                    pelicula.getLikes().remove(usuario.getNombreUsuario());
+                } else {
+                    pelicula.getLikes().add(usuario.getNombreUsuario());
+                }
+                peliculaRepositori.save(pelicula);
+            }
+        }
+
+        model.addAttribute("pelis", peliculaRepositori.findAll());
+        return "consultarPeli";
+    }
 
     /**
      * Muestra la página de login.
